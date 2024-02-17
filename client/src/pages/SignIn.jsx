@@ -5,11 +5,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import { useState } from 'react'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js'
 
 const SignIn = () => {
   const [formData, setFormData] = useState({})
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const {loading , error: errorMessage} = useSelector(state => state.user)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value.trim()})
@@ -17,13 +19,12 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if(!formData.email || !formData.password)
-      return setErrorMessage('Please fill out all fields')
+      return dispatch(signInFailure('Please fill out all fields'))
 
     let data = {}
     
     try {
-      setLoading(true)
-      setErrorMessage(null)
+      dispatch(signInStart())
 
       // all middleware functions in api folder were created for fetch 
       const res = await axios.post('/api/auth/sign-in', formData, {
@@ -35,17 +36,17 @@ const SignIn = () => {
         console.log(data);
       }).catch(err => {
         if(err)
-          return setErrorMessage(err.message)
+          dispatch(signInFailure(err.message))
       })
 
-      setLoading(false)
-
-      if(data.message)
+      if(data.message){
+        dispatch(signInSuccess(data))
         navigate('/')
+      }
+
       
     } catch (error) {
-      setErrorMessage(error.message)
-      setLoading(false)
+      dispatch(signInFailure(error.message))
     }
   }
 
