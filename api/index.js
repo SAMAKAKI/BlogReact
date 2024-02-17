@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import doenv from 'dotenv'
 import userRoutes from './routes/user.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import cors from 'cors'
 
 doenv.config()
 
@@ -13,7 +14,7 @@ mongoose.connect(process.env.MONGO).then(() => {
 })
 
 const app = express()
-
+app.use(cors())
 app.use(express.json());
 app.use((err, req, res, next) => {
   const statusCode  = err.statusCode || 500
