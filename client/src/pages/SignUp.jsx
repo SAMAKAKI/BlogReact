@@ -25,12 +25,14 @@ const SignUp = () => {
       setLoading(true)
       setErrorMessage(null)
 
+      // all middleware functions in api folder were created for fetch 
       const res = await axios.post('/api/auth/sign-up', formData, {
         headers: {
           'Content-Type': 'application/json'
         }
       }).then(res => {
         data = res.data;
+        console.log(data);
       }).catch(err => {
         if(err)
           return setErrorMessage(err.message)
