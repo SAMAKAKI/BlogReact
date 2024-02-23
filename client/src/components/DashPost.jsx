@@ -8,12 +8,16 @@ import { Link } from "react-router-dom"
 const DashPost = () => {
   const { currentUser } = useSelector(state => state.user)
   const [userPosts, setUserPosts] = useState({})
+  const [showMore, setShowMore] = useState(true)
   useEffect(() => {
     const getPosts = async () => {
       try {
         await axios.get(`/api/post/getPosts?userId=${currentUser._id}`).then((res) => {
-          if(res.status === 200)
-            setUserPosts(res.data)
+          if(res.status === 200){
+            setUserPosts(res.data.posts)
+            if(res.data.posts.length < 9)
+              setShowMore(false)
+          }
         }).catch((err) => {
           console.log(err);
         })
@@ -24,9 +28,24 @@ const DashPost = () => {
     if(currentUser.isAdmin) 
       getPosts()
   }, [currentUser._id, currentUser.isAdmin])
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length
+    try {
+      await axios.get(`/api/post/getPosts?userId=${currentUser._id}&startIndex=${startIndex}`).then(res => {
+        if(res.status === 200){
+          setUserPosts((prev) => [...prev, ...res.data.posts])
+          if(res.data.posts.length < 9)
+            setShowMore(false)
+        }
+      })
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-      {currentUser.isAdmin && userPosts.posts?.length > 0 ? (
+      {currentUser.isAdmin && userPosts?.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -39,7 +58,7 @@ const DashPost = () => {
                 <span>Edit</span>
               </Table.HeadCell>
             </Table.Head>
-            {userPosts.posts?.map((post) => (
+            {userPosts?.map((post) => (
               <Table.Body key={post._id} className="divide-y">
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
@@ -64,6 +83,9 @@ const DashPost = () => {
               </Table.Body>
             ))}
           </Table>
+          {showMore && (
+            <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">Show more</button>
+          )}
         </>
       ) : (
         <p>You have no posts yet!</p>
