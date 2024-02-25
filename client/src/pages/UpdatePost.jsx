@@ -74,7 +74,7 @@ const UpdatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.put(`/api/post/updatePost/${formData._id}/${currentUser._id}`, formData, {headers: {'Content-Type': 'application/json'}}).then((res) => {
+      await axios.put(`/api/post/updatePost/${postId}/${currentUser._id}`, formData, {headers: {'Content-Type': 'application/json'}}).then((res) => {
         if(res.status === 200){
           setPublishError(null)
           navigate(`/post/${res.data.slug}`)
