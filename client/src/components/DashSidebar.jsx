@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { Sidebar } from 'flowbite-react'
-import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup,  } from 'react-icons/hi'
+import { HiUser, HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiAnnotation,  } from 'react-icons/hi'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { signOutSuccess } from '../redux/user/userSlice'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { FaRegCommentDots } from "react-icons/fa6";
+import { MdSpaceDashboard } from "react-icons/md";
 
 const DashSidebar = () => {
   const { currentUser } = useSelector(state => state.user)
@@ -47,6 +47,9 @@ const DashSidebar = () => {
           </Link>
           {currentUser.isAdmin && (
             <>
+              <Link to={'/dashboard?tab=dash'}>
+                <Sidebar.Item as='div' active={tab === 'dash'} icon={MdSpaceDashboard}>Dashboard</Sidebar.Item>
+              </Link>
               <Link to={'/dashboard?tab=posts'}>
                 <Sidebar.Item as='div' active={tab === 'posts'} icon={HiDocumentText}>Posts</Sidebar.Item>
               </Link>
@@ -54,7 +57,7 @@ const DashSidebar = () => {
                 <Sidebar.Item as='div' active={tab === 'users'} icon={HiOutlineUserGroup}>Users</Sidebar.Item>
               </Link>
               <Link to={'/dashboard?tab=comments'}>
-                <Sidebar.Item as='div' active={tab === 'comments'} icon={FaRegCommentDots}>Comments</Sidebar.Item>
+                <Sidebar.Item as='div' active={tab === 'comments'} icon={HiAnnotation}>Comments</Sidebar.Item>
               </Link>
             </>
           )}

@@ -1,20 +1,24 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import DashSidebar from '../components/DashSidebar'
 import DashProfile from '../components/DashProfile'
 import DashPost from '../components/DashPost'
 import DashUsers from '../components/DashUsers'
 import DashComment from '../components/DashComment'
+import DashDash from '../components/DashDash'
 
 const Dashboard = () => {
   const location = useLocation()
   const [tab, setTab] = useState('')
+  const navigate = useNavigate()
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
     const tabFromUrl = urlParams.get('tab')
     if(tabFromUrl)
       setTab(tabFromUrl)
+    if(!tab)
+      navigate('/dashboard?tab=dash')
 
   }, [location.search])
 
@@ -34,6 +38,9 @@ const Dashboard = () => {
       )}
       {tab === 'comments' && (
         <DashComment />
+      )}
+      {tab === 'dash' && (
+        <DashDash />
       )}
     </div>
   )
