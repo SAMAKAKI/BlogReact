@@ -7,6 +7,7 @@ import { signOutSuccess } from '../redux/user/userSlice'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
+import { FaRegCommentDots } from "react-icons/fa6";
 
 const DashSidebar = () => {
   const { currentUser } = useSelector(state => state.user)
@@ -51,6 +52,9 @@ const DashSidebar = () => {
               </Link>
               <Link to={'/dashboard?tab=users'}>
                 <Sidebar.Item as='div' active={tab === 'users'} icon={HiOutlineUserGroup}>Users</Sidebar.Item>
+              </Link>
+              <Link to={'/dashboard?tab=comments'}>
+                <Sidebar.Item as='div' active={tab === 'comments'} icon={FaRegCommentDots}>Comments</Sidebar.Item>
               </Link>
             </>
           )}
